@@ -5,7 +5,7 @@ const cors = require('cors');
 const bodyParser = require("body-parser");
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://vishal:12345@cluster0.nqdbc.mongodb.net/UserForm?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb+srv://vishal:12345@cluster0.nqdbc.mongodb.net/FitnessMantra?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
 
 
 app.use(bodyParser.json())
@@ -14,12 +14,12 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-const UserForm = mongoose.model('UserForm', { 
+const Feedback = mongoose.model('Feedback', { 
   userName : String,
   userEmail : String,
   UserMessage : String
 });
-const CreateUser = mongoose.model('CreateUser',{
+const User = mongoose.model('user',{
   FullName : String,
   UserEmail : String,
   MobileNo : String,
@@ -27,8 +27,30 @@ const CreateUser = mongoose.model('CreateUser',{
   UserPassword : String
 })
 
+app.post("/login", (req, res) => {
+  const email = req.body.email;
+  const password  = req.body.password;
+
+  const user = User.findOne({UserEmail: email, UserPassword: password}, (error, result) => {
+    if (error) {
+      return res.status(500).send({
+        error: true,
+        message: "Something went wrong, please try again later"
+      })
+    }
+    if (!result) {
+      return res.status(400).send({
+        error: true,
+        message: "Username or Password is incorrect"
+      })
+    }
+    return res.send(result)
+  })
+
+})
+
 app.post("/formpost", (req, res) => {
-      const data =new UserForm({
+      const data =new Feedback({
         userName: req.body.userName,
         userEmail: req.body.UserMail,
         UserMessage: req.body.UserMessage
@@ -38,7 +60,7 @@ app.post("/formpost", (req, res) => {
 })
 
 app.post("/userRegistration", (req, res) => {
-      const user =new CreateUser({
+      const user =new User({
         FullName: req.body.FullName,
         UserEmail: req.body.UserEmail,
         MobileNo: req.body.MobileNo,
