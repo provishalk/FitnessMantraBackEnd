@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 // Routes
 const userRoute = require("./src/routes/user.router");
 const feedbackRoute = require("./src/routes/feedback.router");
+const adminRoute = require("./src/routes/admin.router");
 
 // Database connection
 mongoose.connect(
@@ -28,6 +29,7 @@ app.use(cors());
 // Register Router
 app.use("/api/user", userRoute);
 app.use("/api/feedback", feedbackRoute);
+app.use("/api/admin", adminRoute);
 
 // Start Server
 app.listen(port);

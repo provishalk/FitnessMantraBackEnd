@@ -57,7 +57,16 @@ module.exports.login = (req, res) => {
         token,
         email: result.email,
         fullName: result.fullName,
+        type: "user",
       });
     }
   );
+};
+
+module.exports.getUsers = async (req, res) => {
+  const data = await User.find({}, { password: 0 });
+  return res.status(200).send({
+    error: false,
+    data,
+  });
 };

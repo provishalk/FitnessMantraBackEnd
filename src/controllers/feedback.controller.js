@@ -1,11 +1,22 @@
 const Feedback = require("../models/feedback.model");
 
-module.exports.addFeedback = (req, res) => {
+module.exports.addFeedback = async (req, res) => {
   const data = new Feedback({
-    name: req.body.userName,
-    email: req.body.UserMail,
-    message: req.body.UserMessage,
+    name: req.body.name,
+    email: req.body.email,
+    message: req.body.message,
   });
-  data.save().then(() => console.log());
-  return res.send("data Recived");
+  await data.save();
+  return res.status(200).send({
+    error: false,
+    message: "Message saved successfully",
+  });
+};
+
+module.exports.getAllFeedbacks = async (req, res) => {
+  const data = await Feedback.find({}).sort("-createdAt");
+  return res.status(200).send({
+    error: false,
+    data,
+  });
 };
